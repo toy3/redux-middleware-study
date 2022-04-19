@@ -22,7 +22,7 @@ export const reducerUtils = {
 };
 
 // type 은 GET_POSTS 또는 GET_POST 문자열
-// promiseCreator 는 프로미스를 만들어주는 함수 getPosts() 또는 getPostsById(id)
+// promiseCreator 는 프로미스를 만들어주는 함수 postsAPI.getPosts() 또는 postsAPI.getPostsById(id)
 export const createPromiseThunk = (type, promiseCreator) => {
   const [SUCCESS, ERROR] = [`${type}_SUCESS`, `${type}_ERROR`];
 
