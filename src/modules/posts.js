@@ -23,7 +23,22 @@ const CLEAR_POST = "CLEAR_POST";
 export const getPosts = createPromiseThunk(GET_POSTS, postsAPI.getPosts);
 
 // post
-export const getPost = createPromiseThunk(GET_POST, postsAPI.getPostsById);
+// export const getPost = createPromiseThunk(GET_POST, postsAPI.getPostsById);
+// 이전에 봤던 post 캐싱기능 구현 위해 새로 작성
+export const getPost = (id) => async (dispatch) => {
+  dispatch({ type: GET_POST, meta: id });
+  try {
+    const payload = await postsAPI.getPostsById(id);
+    dispatch({ type: GET_POST_SUCCESS, payload, meta: id });
+  } catch (e) {
+    dispatch({
+      type: GET_POST_ERROR,
+      payload: e,
+      error: true,
+      meta: id,
+    });
+  }
+};
 
 // 초기화
 export const clearPost = () => ({ type: CLEAR_POST });
@@ -31,12 +46,46 @@ export const clearPost = () => ({ type: CLEAR_POST });
 // 기본 상태
 const initialState = {
   posts: reducerUtils.initial(),
-  post: reducerUtils.initial(),
+  // post: reducerUtils.initial(),
+  // 이전에 봤던 post 캐싱기능 구현 위해 새로 작성
+  post: {},
 };
 
 // 리듀서
 const getPostsReducer = handleAsyncActions(GET_POSTS, "posts", true);
-const getPostReducer = handleAsyncActions(GET_POST, "post");
+// 이전에 봤던 post 캐싱기능 구현 위해 새로 작성
+// const getPostReducer = handleAsyncActions(GET_POST, "post");
+const getPostReducer = (state, action) => {
+  const id = action.meta;
+  switch (action.type) {
+    case GET_POST:
+      return {
+        ...state,
+        post: {
+          ...state.post,
+          [id]: reducerUtils.loading(state.post[id] && state.post[id].data), // 로딩 중에 기존 데이터 유지하기
+        },
+      };
+    case GET_POST_SUCCESS:
+      return {
+        ...state,
+        post: {
+          ...state.post,
+          [id]: reducerUtils.success(action.payload),
+        },
+      };
+    case GET_POST_ERROR:
+      return {
+        ...state,
+        post: {
+          ...state.post,
+          [id]: reducerUtils.error(action.payload),
+        },
+      };
+    default:
+      return state;
+  }
+};
 
 export default function posts(state = initialState, action) {
   switch (action.type) {
