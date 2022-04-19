@@ -48,7 +48,7 @@ export const createPromiseThunk = (type, promiseCreator) => {
 
 // type 은 createPromiseThunk의 type과 동일
 // key : 각 action들 마다 관리하는 키값이 다르다. posts와 post
-export const handleAsyncActions = (type, key) => {
+export const handleAsyncActions = (type, key, keepData) => {
   const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
 
   // 세가지(type, success, error) action들에 대한 리듀서 작성 및 반환
@@ -57,7 +57,7 @@ export const handleAsyncActions = (type, key) => {
       case type:
         return {
           ...state,
-          [key]: reducerUtils.loading(),
+          [key]: reducerUtils.loading(keepData ? state[key].data : null),
         };
       case SUCCESS:
         return {
