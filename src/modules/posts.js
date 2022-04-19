@@ -1,4 +1,4 @@
-import * as postsAPI from "../api/posts";
+import * as postsAPI from "../api/posts"; // api/posts 안의 함수 모두 불러오기
 import {
   createPromiseThunk,
   handleAsyncActions,

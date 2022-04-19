@@ -24,11 +24,11 @@ export const reducerUtils = {
 // type 은 GET_POSTS 또는 GET_POST 문자열
 // promiseCreator 는 프로미스를 만들어주는 함수 postsAPI.getPosts() 또는 postsAPI.getPostsById(id)
 export const createPromiseThunk = (type, promiseCreator) => {
-  const [SUCCESS, ERROR] = [`${type}_SUCESS`, `${type}_ERROR`];
+  const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
 
   // thunk를 만들어주는 함수를 반환
   return (param) => async (dispatch) => {
-    dispatch({ type });
+    dispatch({ type, param });
     try {
       const payload = await promiseCreator(param);
       dispatch({
@@ -49,7 +49,7 @@ export const createPromiseThunk = (type, promiseCreator) => {
 // type 은 createPromiseThunk의 type과 동일
 // key : 각 action들 마다 관리하는 키값이 다르다. posts와 post
 export const handleAsyncActions = (type, key) => {
-  const [SUCCESS, ERROR] = [`${type}_SUCESS`, `${type}_ERROR`];
+  const [SUCCESS, ERROR] = [`${type}_SUCCESS`, `${type}_ERROR`];
 
   // 세가지(type, success, error) action들에 대한 리듀서 작성 및 반환
   return (state, action) => {

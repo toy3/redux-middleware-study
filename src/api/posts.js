@@ -1,7 +1,7 @@
 // 1초 뒤에 끝나는 promise
 const sleep = (n) => new Promise((resolve) => setTimeout(resolve, n));
 
-sleep(1000).then(() => console.log("Hello World")); // 1초 뒤에 Hello World 실행
+// sleep(1000).then(() => console.log("Hello World")); // 1초 뒤에 Hello World 실행
 
 // 가짜 posts 목록 데이터
 // { id, title, body }
