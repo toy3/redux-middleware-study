@@ -6,6 +6,7 @@ import {
   handleAsyncActionsById,
   reducerUtils,
 } from "../lib/asyncUtils";
+import { call, put, takeEvery } from "redux-saga/effects";
 
 //getPosts 에 대한 ACTION
 const GET_POSTS = "GET_POSTS"; // 특정 요청이 시작됐다를 알리는 ACTION
@@ -21,13 +22,56 @@ const GET_POST_ERROR = "GET_POST_ERROR";
 const CLEAR_POST = "CLEAR_POST";
 
 ////// [ thunk 생성함수 ]
-// posts
-export const getPosts = createPromiseThunk(GET_POSTS, postsAPI.getPosts);
+// saga 액션 객체
+export const getPosts = () => ({ type: GET_POSTS });
+export const getPost = (id) => ({
+  type: GET_POST,
+  payload: id,
+  meta: id,
+});
 
-// post
-// export const getPost = createPromiseThunk(GET_POST, postsAPI.getPostsById);
-// 이전에 봤던 post 캐싱기능 구현 위해 새로 작성
-export const getPost = createPromiseThunkById(GET_POST, postsAPI.getPostsById);
+// saga 함수들
+function* getPostsSaga() {
+  try {
+    const posts = yield call(postsAPI.getPosts); // yield call은 프로미스가 끝날때까지 기다렸다가 그 결과물을 posts 안에 담아준다.
+    yield put({
+      type: GET_POSTS_SUCCESS,
+      payload: posts,
+    });
+  } catch (e) {
+    yield put({
+      type: GET_POSTS_ERROR,
+      payload: e,
+      error: true,
+    });
+  }
+}
+
+function* getPostSaga(action) {
+  const id = action.payload;
+  try {
+    const post = yield call(postsAPI.getPostsById, id);
+    yield put({
+      type: GET_POST_SUCCESS,
+      payload: post,
+      meta: id,
+    });
+  } catch (e) {
+    yield put({
+      type: GET_POST_ERROR,
+      payload: e,
+      error: true,
+      meta: id,
+    });
+  }
+}
+
+// 위 리덕스 모듈을 위한 saga를 모니터링 해주는 함수. rootSaga에 등록해준다.
+export function* postsSaga() {
+  yield takeEvery(GET_POSTS, getPostsSaga);
+  yield takeEvery(GET_POST, getPostSaga);
+}
+
 export const goToHome = () => (dispatch, getState, extra) => {
   const { history } = extra;
   history.push("/");
