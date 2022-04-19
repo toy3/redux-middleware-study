@@ -41,7 +41,7 @@ export const getPost = (id) => async (dispatch) => {
 
   // API 호출
   try {
-    const post = await postsAPI.getPost(id);
+    const post = await postsAPI.getPostsById(id);
     // 성공했을 때
     dispatch({
       type: GET_POST_SUCCESS,
