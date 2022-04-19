@@ -1,7 +1,7 @@
 import * as postsAPI from "../api/posts"; // api/posts 안의 함수 모두 불러오기
 import {
-  createPromiseThunk,
-  createPromiseThunkById,
+  createPromiseSaga,
+  createPromiseSagaById,
   handleAsyncActions,
   handleAsyncActionsById,
   reducerUtils,
@@ -31,40 +31,8 @@ export const getPost = (id) => ({
 });
 
 // saga 함수들
-function* getPostsSaga() {
-  try {
-    const posts = yield call(postsAPI.getPosts); // yield call은 프로미스가 끝날때까지 기다렸다가 그 결과물을 posts 안에 담아준다.
-    yield put({
-      type: GET_POSTS_SUCCESS,
-      payload: posts,
-    });
-  } catch (e) {
-    yield put({
-      type: GET_POSTS_ERROR,
-      payload: e,
-      error: true,
-    });
-  }
-}
-
-function* getPostSaga(action) {
-  const id = action.payload;
-  try {
-    const post = yield call(postsAPI.getPostsById, id);
-    yield put({
-      type: GET_POST_SUCCESS,
-      payload: post,
-      meta: id,
-    });
-  } catch (e) {
-    yield put({
-      type: GET_POST_ERROR,
-      payload: e,
-      error: true,
-      meta: id,
-    });
-  }
-}
+const getPostsSaga = createPromiseSaga(GET_POSTS, postsAPI.getPosts);
+const getPostSaga = createPromiseSagaById(GET_POST, postsAPI.getPostsById);
 
 // 위 리덕스 모듈을 위한 saga를 모니터링 해주는 함수. rootSaga에 등록해준다.
 export function* postsSaga() {
