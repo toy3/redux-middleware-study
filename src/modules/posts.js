@@ -20,7 +20,7 @@ const GET_POST_ERROR = "GET_POST_ERROR";
 // 초기화 ACTION
 const CLEAR_POST = "CLEAR_POST";
 
-// thunk 생성함수
+////// [ thunk 생성함수 ]
 // posts
 export const getPosts = createPromiseThunk(GET_POSTS, postsAPI.getPosts);
 
@@ -28,6 +28,10 @@ export const getPosts = createPromiseThunk(GET_POSTS, postsAPI.getPosts);
 // export const getPost = createPromiseThunk(GET_POST, postsAPI.getPostsById);
 // 이전에 봤던 post 캐싱기능 구현 위해 새로 작성
 export const getPost = createPromiseThunkById(GET_POST, postsAPI.getPostsById);
+export const goToHome = () => (dispatch, getState, extra) => {
+  const { history } = extra;
+  history.push("/");
+};
 
 // 초기화
 export const clearPost = () => ({ type: CLEAR_POST });
@@ -40,7 +44,7 @@ const initialState = {
   post: {},
 };
 
-// 리듀서
+////// [ 리듀서 ]
 const getPostsReducer = handleAsyncActions(GET_POSTS, "posts", true);
 // 이전에 봤던 post 캐싱기능 구현 위해 새로 작성
 // const getPostReducer = handleAsyncActions(GET_POST, "post");

@@ -10,21 +10,29 @@ import rootReducer from "./modules";
 import logger from "redux-logger";
 import { composeWithDevTools } from "redux-devtools-extension";
 import ReduxThunk from "redux-thunk";
-import { BrowserRouter } from "react-router-dom";
+import { Router } from "react-router-dom";
+import { createBrowserHistory } from "history";
+
+const customHistory = createBrowserHistory();
 
 const store = createStore(
   rootReducer,
-  composeWithDevTools(applyMiddleware(ReduxThunk, logger)) // 미들웨어 적용(myLogger, logger). 다른 미들웨어랑 logger를 함께 사용할 경우 logger가 맨 끝에 가도록 해줘야 함.
+  composeWithDevTools(
+    applyMiddleware(
+      ReduxThunk.withExtraArgument({ history: customHistory }),
+      logger
+    )
+  ) // 미들웨어 적용(myLogger, logger). 다른 미들웨어랑 logger를 함께 사용할 경우 logger가 맨 끝에 가도록 해줘야 함.
 );
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 // 프로젝트에 리덕스 적용해주기 === Provider, store 적용해주기
 root.render(
-  <BrowserRouter>
+  <Router history={customHistory}>
     <Provider store={store}>
       <App />
     </Provider>
-  </BrowserRouter>
+  </Router>
 );
 
 // If you want to start measuring performance in your app, pass a function
