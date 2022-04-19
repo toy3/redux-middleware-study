@@ -10,6 +10,7 @@ import rootReducer from "./modules";
 import logger from "redux-logger";
 import { composeWithDevTools } from "redux-devtools-extension";
 import ReduxThunk from "redux-thunk";
+import { BrowserRouter } from "react-router-dom";
 
 const store = createStore(
   rootReducer,
@@ -19,11 +20,11 @@ const store = createStore(
 const root = ReactDOM.createRoot(document.getElementById("root"));
 // 프로젝트에 리덕스 적용해주기 === Provider, store 적용해주기
 root.render(
-  <React.StrictMode>
+  <BrowserRouter>
     <Provider store={store}>
       <App />
     </Provider>
-  </React.StrictMode>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function
