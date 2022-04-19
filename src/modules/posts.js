@@ -69,57 +69,33 @@ export default function posts(state = initialState, action) {
     case GET_POSTS:
       return {
         ...state,
-        posts: {
-          loading: true,
-          data: null,
-          error: null,
-        },
+        posts: reducerUtils.loading(),
       };
     case GET_POSTS_SUCCESS:
       return {
         ...state,
-        posts: {
-          loading: false,
-          data: action.posts,
-          error: null,
-        },
+        posts: reducerUtils.success(action.posts),
       };
     case GET_POSTS_ERROR:
       return {
         ...state,
-        posts: {
-          loading: false,
-          data: null,
-          error: action.error,
-        },
+        posts: reducerUtils.error(action.error),
       };
     // post
     case GET_POST:
       return {
         ...state,
-        post: {
-          loading: true,
-          data: null,
-          error: null,
-        },
+        posts: reducerUtils.loading(),
       };
     case GET_POST_SUCCESS:
       return {
         ...state,
-        post: {
-          loading: false,
-          data: action.posts,
-          error: null,
-        },
+        posts: reducerUtils.success(action.post),
       };
     case GET_POST_ERROR:
       return {
         ...state,
-        post: {
-          loading: false,
-          data: null,
-          error: action.error,
-        },
+        posts: reducerUtils.error(action.error),
       };
     default:
       return state;
